@@ -3,46 +3,103 @@
 
 
 
-<div class="row">
-  <div class="col-lg-4" style="">
+    <div class="row">
+        <div class="col-lg-4" style="">
+      
+          <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+          <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+          <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+          <!------ Include the above in your HEAD tag ---------->
+          
+          <div class="container search-table">
+                      <div class="search-box">
+                          <div class="row">
+                              <div class="col-md-3">
+                            
+                              </div>
+                              <div class="col-md-9">
+                                  <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search all fields e.g. HTML">
+                                  <script>
+                                      $(document).ready(function () {
+                                          $("#myInput").on("keyup", function () {
+                                              var value = $(this).val().toLowerCase();
+                                              $("#myTable tr").filter(function () {
+                                                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                              });
+                                          });
+                                      });
+                                  </script>
+                              </div> 
+                          </div>
+                      </div>
+                      <div class="search-list">
+                          <h3>Search Materials</h3>
+                          <table class="table" id="myTable">
+                              <thead>
+                                  <tr>
+                                      <th>Image</th>
+                                      <th>Name</th>
+                                      <th>Brand</th>
+                                      <th>Price</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  
+                              {%for material in material %}
+                              <tr>
+                                  <td><span class="image-block">
+                                      <a class="image-zoom" href="/static/pics/{{material.image}}" rel="prettyPhoto[gallery]" style="height: 250px;width: 335px;">
+                                         <figure>
+                                            <img src="/static/pics/{{material.image}}" class="img-fluid" alt="" style="height: 50px;width: 50px;">
+                                            <figcaption>
+                                               
+                                            </figcaption>
+                                         </figure>
+                                      </a>
+                                   </span></td>
+                                  <td>{{material.name}}</td>
+                                  <td>{{material.brand}}</td>
+                                  <td>{{material.price}}</td>
+                              </tr>
+                           
+                              {%endfor%}
+                              </tbody>
+                          </table>
+          
+                      </div>
+                  </div>
+      
+      <style>
+        .search-table{
+          padding: 10%;
+          margin-top: -6%;
+      }
+      .search-box{
+          background: #c1c1c1;
+          border: 1px solid #ababab;
+          padding: 3%;
+      }
+      .search-box input:focus{
+          box-shadow:none;
+          border:2px solid #eeeeee;
+      }
+      .search-list{
+          background: #fff;
+          border: 1px solid #ababab;
+          border-top: none;
+      }
+      .search-list h3{
+          background: #eee;
+          padding: 3%;
+          margin-bottom: 0%;
+      }
+      </style>
+      
+      
+        </div>
 
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
-  
 
-<style>
-  .search-table{
-    padding: 10%;
-    margin-top: -6%;
-}
-.search-box{
-    background: #c1c1c1;
-    border: 1px solid #ababab;
-    padding: 3%;
-}
-.search-box input:focus{
-    box-shadow:none;
-    border:2px solid #eeeeee;
-}
-.search-list{
-    background: #fff;
-    border: 1px solid #ababab;
-    border-top: none;
-}
-.search-list h3{
-    background: #eee;
-    padding: 3%;
-    margin-bottom: 0%;
-}
-</style>
-
-
-  </div>
-
-
-<div class="container auth" style="margin-top: 50px;">
+<div class="col-lg-8" style="    right: 162px; margin-top: 40px;">
   <h1 class="text-center" >Add Your Project</h1>
   <div id="big-form" class="well auth-box" style="max-width: 650px;margin-left: 230px;margin-top: 20px;">
     <form action="" method="POST" enctype="multipart/form-data">
@@ -337,7 +394,193 @@
 </div></td>
 
 </tr>
+<tr>
 
+    <td><div class="">
+    
+      {% if form.mat6.errors %}
+          {{ form.mat6(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+              {% for error in form.mat6.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+          </div>
+      {% else %}
+          <select id="select_box" class="form-group" style="" name="mat6">
+    
+            <option></option>
+            {% for material in material %}
+            <option value={{material.id}}>Name: {{material.name}}, Brand: {{material.brand}}, Price: {{material.price}}</option>
+            {% endfor %}
+            </select>
+      {% endif %}
+    
+    </div></td>
+
+<td><div class="">
+    
+{% if form.mat6q.errors %}
+{{ form.mat6q(class="form-control form-control-lg is-invalid") }}
+<div class="invalid-feedback">
+    {% for error in form.mat6q.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+</div>
+{% else %}
+{{ form.mat6q(class="form-control form-control-lg") }}
+{% endif %}
+
+</div></td>
+</tr>
+<tr>
+
+    <td><div class="">
+    
+      {% if form.mat7.errors %}
+          {{ form.mat7(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+              {% for error in form.mat7.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+          </div>
+      {% else %}
+          <select id="select_box" class="form-group" style="" name="mat7">
+    
+            <option></option>
+            {% for material in material %}
+            <option value={{material.id}}>Name: {{material.name}}, Brand: {{material.brand}}, Price: {{material.price}}</option>
+            {% endfor %}
+            </select>
+      {% endif %}
+    
+    </div></td>
+
+<td><div class="">
+    
+{% if form.mat7q.errors %}
+{{ form.mat7q(class="form-control form-control-lg is-invalid") }}
+<div class="invalid-feedback">
+    {% for error in form.mat7q.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+</div>
+{% else %}
+{{ form.mat7q(class="form-control form-control-lg") }}
+{% endif %}
+
+</div></td>
+</tr><tr>
+
+    <td><div class="">
+    
+      {% if form.mat8.errors %}
+          {{ form.mat8(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+              {% for error in form.mat8.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+          </div>
+      {% else %}
+          <select id="select_box" class="form-group" style="" name="mat8">
+    
+            <option></option>
+            {% for material in material %}
+            <option value={{material.id}}>Name: {{material.name}}, Brand: {{material.brand}}, Price: {{material.price}}</option>
+            {% endfor %}
+            </select>
+      {% endif %}
+    
+    </div></td>
+
+<td><div class="">
+    
+{% if form.mat8q.errors %}
+{{ form.mat8q(class="form-control form-control-lg is-invalid") }}
+<div class="invalid-feedback">
+    {% for error in form.mat8q.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+</div>
+{% else %}
+{{ form.mat8q(class="form-control form-control-lg") }}
+{% endif %}
+
+</div></td>
+</tr><tr>
+
+    <td><div class="">
+    
+      {% if form.mat9.errors %}
+          {{ form.mat9(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+              {% for error in form.mat9.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+          </div>
+      {% else %}
+          <select id="select_box" class="form-group" style="" name="mat9">
+    
+            <option></option>
+            {% for material in material %}
+            <option value={{material.id}}>Name: {{material.name}}, Brand: {{material.brand}}, Price: {{material.price}}</option>
+            {% endfor %}
+            </select>
+      {% endif %}
+    
+    </div></td>
+
+<td><div class="">
+    
+{% if form.mat9q.errors %}
+{{ form.mat9q(class="form-control form-control-lg is-invalid") }}
+<div class="invalid-feedback">
+    {% for error in form.mat9q.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+</div>
+{% else %}
+{{ form.mat9q(class="form-control form-control-lg") }}
+{% endif %}
+
+</div></td>
+</tr><tr>
+
+    <td><div class="">
+    
+      {% if form.mat10.errors %}
+          {{ form.mat10(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+              {% for error in form.mat10.errors %}
+                  <span>{{ error }}</span>
+              {% endfor %}
+          </div>
+      {% else %}
+          <select id="select_box" class="form-group" style="" name="mat10">
+    
+            <option></option>
+            {% for material in material %}
+            <option value={{material.id}}>Name: {{material.name}}, Brand: {{material.brand}}, Price: {{material.price}}</option>
+            {% endfor %}
+            </select>
+      {% endif %}
+    
+    </div></td>
+
+<td><div class="">
+    
+{% if form.mat10q.errors %}
+{{ form.mat10q(class="form-control form-control-lg is-invalid") }}
+<div class="invalid-feedback">
+    {% for error in form.mat10q.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+</div>
+{% else %}
+{{ form.mat10q(class="form-control form-control-lg") }}
+{% endif %}
+
+</div></td>
+</tr>
        </table>
       <div class="form-group">
         {{ form.addcost.label(class="form-control-label") }}

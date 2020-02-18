@@ -3,7 +3,7 @@ from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from builderszone.models import  Materials, Feedback, Gallery, Login, Project
+from builderszone.models import  Materials, Feedback, Gallery, Login, Project,Sort
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms import SelectField
 
@@ -16,7 +16,7 @@ class RegistrationForm(FlaskForm):
     contact = StringField('Contact No')
 
         
-    lincense = StringField('license No')
+    lincense = StringField('license No',render_kw={"placeholder": ".../..../...."})
 
         
     email = StringField('Email',
@@ -105,6 +105,16 @@ class Projects(FlaskForm):
     mat4q = StringField('Materials')
     mat5 = StringField('Materials', render_kw={"placeholder": "materials"})
     mat5q = StringField('Materials')
+    mat6 = StringField('Materials', render_kw={"placeholder": "materials"})
+    mat6q = StringField('Materials')
+    mat7 = StringField('Materials', render_kw={"placeholder": "materials"})
+    mat7q = StringField('Materials')
+    mat8 = StringField('Materials', render_kw={"placeholder": "materials"})
+    mat8q = StringField('Materials')
+    mat9 = StringField('Materials', render_kw={"placeholder": "materials"})
+    mat9q = StringField('Materials')
+    mat10 = StringField('Materials', render_kw={"placeholder": "materials"})
+    mat10q = StringField('Materials')
     
     numemp = StringField('No of Employees', render_kw={"placeholder": "no"})
     days = StringField('Working Days', render_kw={"placeholder": "Days"})
@@ -113,3 +123,33 @@ class Projects(FlaskForm):
     addcost = StringField('Additional cost', render_kw={"placeholder": "cost"})
     pic = FileField('Upload Picture', validators=[FileAllowed(['jpg', 'png','jpeg'])])
     submit = SubmitField('Save')
+
+
+class Cod(FlaskForm):
+    submit = SubmitField('Make a payment')
+
+
+class Creditcard(FlaskForm):
+    name = StringField('Name',render_kw={"placeholder":"Name"},
+                        validators=[DataRequired()])
+    number = StringField('number',render_kw={"placeholder":".... .... .... ...."},validators=[DataRequired()])
+    cvv = StringField(' cvv',render_kw={"placeholder":"..."},
+                        validators=[DataRequired()])
+    date = StringField('date',render_kw={"placeholder":"MM/YY"},
+                        validators=[DataRequired()])
+    submit = SubmitField('Make A Payment')
+
+class Paypal(FlaskForm):
+    number = StringField('number',render_kw={"placeholder":"xxxx xxxx xxxx xxxx"},
+                        validators=[DataRequired()])
+    name = StringField('Name',render_kw={"placeholder":"Name"},validators=[DataRequired()])
+    cvv = StringField(' cvv',render_kw={"placeholder":"xxx"},
+                        validators=[DataRequired()])
+    date = StringField('date',render_kw={"placeholder":"MM/YY"},
+                        validators=[DataRequired()])
+    submit = SubmitField('Proceed Payment')
+
+class Amountform(FlaskForm):
+    amount = StringField('Amount',render_kw={"placeholder":"...."},
+                        validators=[DataRequired()])
+    submit = SubmitField('Proceed Payment')

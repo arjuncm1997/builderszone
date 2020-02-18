@@ -1,0 +1,51 @@
+{%extends 'ulayout.html'%}
+{% block content %}
+
+<div class="col-lg-8" style="margin-left: 200px;margin-top: 40px;">
+    <center><h1 class="text-center" >Amount</h1></center>
+    <div id="big-form" class="well auth-box" style="max-width: 600px;margin-left: 180px;">
+      <form action="" method="POST" enctype="multipart/form-data">
+  
+  
+        {{form.hidden_tag()}}
+  
+        <fieldset>
+  
+          <div class="form-group">
+            {{ form.amount.label(class="form-control-label") }}
+            <div class="">
+              
+                                    {% if form.amount.errors %}
+                                        {{ form.amount(class="form-control form-control-lg is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.amount.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.amount(class="form-control form-control-lg") }}
+                                    {% endif %}
+              
+            </div>
+          </div>
+
+        <div class="form-group">
+          <div style="color:black;margin-left: 180px;" >{{ form.submit(class="btn btn-outline-info") }}</div>
+          
+        </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+  
+  </div>
+  
+  
+  
+  </div>
+  
+  
+
+
+
+{% endblock%}

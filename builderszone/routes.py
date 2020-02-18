@@ -3,15 +3,30 @@ from flask import Flask, flash, session
 from flask import render_template, flash, redirect, request, abort, url_for
 from builderszone import app,db, bcrypt, mail
 from flask_login import login_user, current_user, logout_user, login_required
-from builderszone.models import  Materials, Feedback, Gallery, Login, Project
+from builderszone.models import  Materials, Feedback, Gallery, Login, Sort,Project, Credit, Pay
 from PIL import Image
-from builderszone.forms import Material,RegistrationForm,LoginForm, Imageadd, RequestResetForm,ResetPasswordForm, Imageupdate, Accountform, Projects
+from builderszone.forms import Material,RegistrationForm,LoginForm,Cod,Amountform, Creditcard,Paypal,Imageadd, RequestResetForm,ResetPasswordForm, Imageupdate, Accountform, Projects
 from random import randint
 from flask_mail import Message
 
-@app.route('/')
+@app.route('/',methods=['GET', 'POST'])
 def index():
-    gallery=Gallery.query.all()
+    if request.method=='POST':
+        name= request.form['name1']
+        email= request.form['email1']
+        phone= request. form['phone1']
+        subject= request. form['subject1']
+        message= request. form['message1']
+        new1 = Feedback(namee=name,email=email,phone=phone,subject=subject,message=message,usertype='public')
+        try:
+            db.session.add(new1)
+            db.session.commit()
+            return redirect('/')
+
+        except:
+            return 'not add'  
+    else:
+        gallery=Gallery.query.all()
     return render_template('index.html', gallery=gallery)
 
 @app.route('/playout')
@@ -57,12 +72,11 @@ def plogin():
 def registerarchitect():  
     form=RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new = Login(username= form.username.data, email=form.email.data, password=hashed_password,address = form.address.data, lincese = form.lincense.data , phone = form.contact.data,usertype= 'architect' )
+        new = Login(username= form.username.data, email=form.email.data, password=form.password.data,address = form.address.data, lincese = form.lincense.data , phone = form.contact.data,usertype= 'architect' )
         db.session.add(new)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect('/login')
+        flash('Your account has been created! waiting for approval', 'success')
+        return redirect('/plogin')
     return render_template('registerarchitect.html',title='Register', form=form)
 
 @app.route('/registeruser', methods=['GET','POST'])
@@ -121,6 +135,10 @@ def admin():
 def architectview():
     archi=Login.query.filter_by(usertype='architect',status='approved').all()
     return render_template('architectview.html', archi=archi)
+@app.route('/architectreject')
+def architectreject():
+    archi=Login.query.filter_by(usertype='architect',status='rejected').all()
+    return render_template('architectreject.html', archi=archi)
 
 @app.route('/userview')
 def userview():
@@ -140,7 +158,7 @@ def projectadd():
         if form.pic.data:
             pic = save_picture(form.pic.data)
             view = pic
-        empcost =  int(form.numemp.data)* int(form.days.data) +int(form.empcost.data)
+        empcost1 =  int(form.numemp.data)* int(form.days.data) *int(form.empcost.data)
         mat1=form.mat1.data
         mat11=Materials.query.get_or_404(mat1)
         mat1cost=int(mat11.price)*int(form.mat1q.data)
@@ -156,9 +174,24 @@ def projectadd():
         mat5=form.mat5.data
         mat55=Materials.query.get_or_404(mat5)
         mat5cost=int(mat55.price)*int(form.mat5q.data)
-        matcost = int(mat1cost)+int(mat2cost)+int(mat3cost)+int(mat4cost)+int(mat5cost)
-        totalcost = int(empcost)+int(matcost)+int(form.addcost.data)
-        project = Project(owner = current_user.username,name= form.name.data, desc = form.desc.data,days=form.days.data, totalcost=totalcost ,addcost=form.addcost.data ,numemp =form.numemp.data ,empcost=  empcost  , matcost=  matcost  ,mat1= form.mat1.data  , mat2= form.mat2.data  ,mat3= form.mat3.data   ,mat4=form.mat4.data, mat5=form.mat5.data   ,mat1q= form.mat1q.data  , mat2q= form.mat2q.data  ,mat3q= form.mat3q.data   ,mat4q=form.mat4q.data, mat5q=form.mat5q.data   ,image = view)
+        mat6=form.mat6.data
+        mat66=Materials.query.get_or_404(mat6)
+        mat6cost=int(mat66.price)*int(form.mat6q.data)
+        mat7=form.mat7.data
+        mat77=Materials.query.get_or_404(mat7)
+        mat7cost=int(mat77.price)*int(form.mat7q.data)
+        mat8=form.mat8.data
+        mat88=Materials.query.get_or_404(mat8)
+        mat8cost=int(mat88.price)*int(form.mat8q.data)
+        mat9=form.mat9.data
+        mat99=Materials.query.get_or_404(mat9)
+        mat9cost=int(mat99.price)*int(form.mat9q.data)
+        mat10=form.mat10.data
+        mat1010=Materials.query.get_or_404(mat10)
+        mat10cost=int(mat1010.price)*int(form.mat10q.data)
+        matcost = int(mat1cost)+int(mat2cost)+int(mat3cost)+int(mat4cost)+int(mat5cost)+int(mat6cost)+int(mat7cost)+int(mat8cost)+int(mat9cost)+int(mat10cost)
+        totalcost = int(empcost1)+int(matcost)+int(form.addcost.data)
+        project = Project(owner = current_user.username,name= form.name.data, desc = form.desc.data,days=form.days.data, totalcost=totalcost ,addcost=form.addcost.data ,numemp =form.numemp.data ,empcost1=  empcost1  , empcost =form.empcost.data,matcost=  matcost  ,mat1= form.mat1.data  , mat2= form.mat2.data  ,mat3= form.mat3.data   ,mat4=form.mat4.data, mat5=form.mat5.data ,mat6=form.mat6.data , mat7=form.mat7.data,mat8=form.mat8.data,mat9=form.mat9.data,mat10=form.mat10.data,mat1q= form.mat1q.data  , mat2q= form.mat2q.data  ,mat3q= form.mat3q.data   ,mat4q=form.mat4q.data, mat5q=form.mat5q.data  , mat6q=form.mat6q.data , mat7q=form.mat7q.data, mat8q=form.mat8q.data, mat9q=form.mat9q.data, mat10q=form.mat10q.data,image = view)
         db.session.add(project)
         db.session.commit()
         return redirect('/aindex')
@@ -166,7 +199,273 @@ def projectadd():
 
 
 
+@app.route('/aprojectsview')
+def aprojectsview():
+    project=Project.query.all()
+    return render_template("aprojectsview.html",project=project)
 
+@app.route('/aprojectsedit/<int:id>',methods=['POST','GET'])
+@login_required
+def aprojectsedit(id):
+    material = Materials.query.all()
+    form= Projects()
+    view=""
+    cost1 = ""
+    mat11=""
+    project = Project.query.get_or_404(id)
+    if form.validate_on_submit():
+        if form.pic.data:
+            pic = save_picture(form.pic.data)
+            project.image = pic
+        empcost1 =  int(form.numemp.data)* int(form.days.data) *int(form.empcost.data)
+        mat1=form.mat1.data
+        mat11=Materials.query.get_or_404(mat1)
+        mat1cost=int(mat11.price)*int(form.mat1q.data)
+        mat2=form.mat2.data
+        mat22=Materials.query.get_or_404(mat2)
+        mat2cost=int(mat22.price)*int(form.mat2q.data)
+        mat3=form.mat3.data
+        mat33=Materials.query.get_or_404(mat3)
+        mat3cost=int(mat33.price)*int(form.mat3q.data)
+        mat4=form.mat4.data
+        mat44=Materials.query.get_or_404(mat4)
+        mat4cost=int(mat44.price)*int(form.mat4q.data)
+        mat5=form.mat5.data
+        mat55=Materials.query.get_or_404(mat5)
+        mat5cost=int(mat55.price)*int(form.mat5q.data)
+        mat6=form.mat6.data
+        mat66=Materials.query.get_or_404(mat6)
+        mat6cost=int(mat66.price)*int(form.mat6q.data)
+        mat7=form.mat7.data
+        mat77=Materials.query.get_or_404(mat7)
+        mat7cost=int(mat77.price)*int(form.mat7q.data)
+        mat8=form.mat8.data
+        mat88=Materials.query.get_or_404(mat8)
+        mat8cost=int(mat88.price)*int(form.mat8q.data)
+        mat9=form.mat9.data
+        mat99=Materials.query.get_or_404(mat9)
+        mat9cost=int(mat99.price)*int(form.mat9q.data)
+        mat10=form.mat10.data
+        mat1010=Materials.query.get_or_404(mat10)
+        mat10cost=int(mat1010.price)*int(form.mat10q.data)
+        matcost = int(mat1cost)+int(mat2cost)+int(mat3cost)+int(mat4cost)+int(mat5cost)+int(mat6cost)+int(mat7cost)+int(mat8cost)+int(mat9cost)+int(mat10cost)
+        totalcost = int(empcost1)+int(matcost)+int(form.addcost.data)
+        project.name = form.name.data
+        project.desc = form.desc.data
+        project.days = form.days.data
+        project.totalcost = totalcost
+        project.addcost=form.addcost.data
+        project.numemp =form.numemp.data 
+        project.empcost1= empcost1
+        project.empcost=  form.empcost.data 
+        project.matcost=  matcost  
+        project.mat1= form.mat1.data  
+        project.mat2= form.mat2.data  
+        project.mat3= form.mat3.data   
+        project.mat4=form.mat4.data
+        project.mat5=form.mat5.data   
+        project.mat1q= form.mat1q.data  
+        project.mat2q= form.mat2q.data  
+        project.mat3q= form.mat3q.data   
+        project.mat4q=form.mat4q.data
+        project.mat5q=form.mat5q.data 
+        db.session.commit()
+        return redirect('/aprojectsview')
+    elif request.method == 'GET':
+        form.name.data = project.name
+        form.desc.data = project.desc
+        form.days.data = project.days
+        form.numemp.data = project.numemp
+        form.empcost.data = project.empcost
+        form.addcost.data = project.addcost
+        form.mat1q.data = project.mat1q
+        form.mat2q.data = project.mat2q
+        form.mat3q.data = project.mat3q
+        form.mat4q.data = project.mat4q
+        form.mat5q.data = project.mat5q
+        form.mat6q.data = project.mat6q
+        form.mat7q.data = project.mat7q
+        form.mat8q.data = project.mat8q
+        form.mat9q.data = project.mat9q
+        form.mat10q.data = project.mat10q
+        mat1 = project.mat1
+        mat11= Materials.query.get_or_404(mat1)
+        mat2 = project.mat2
+        mat22= Materials.query.get_or_404(mat2)
+        mat3 = project.mat3
+        mat33= Materials.query.get_or_404(mat3)
+        mat4 = project.mat1
+        mat44= Materials.query.get_or_404(mat4)
+        mat5 = project.mat5
+        mat55= Materials.query.get_or_404(mat5)
+        mat6 = project.mat6
+        mat66= Materials.query.get_or_404(mat6)
+        mat7 = project.mat7
+        mat77= Materials.query.get_or_404(mat7)
+        mat8 = project.mat8
+        mat88= Materials.query.get_or_404(mat8)
+        mat9 = project.mat9
+        mat99= Materials.query.get_or_404(mat9)
+        mat10 = project.mat10
+        mat1010= Materials.query.get_or_404(mat10)
+
+    return render_template('aprojectsedit.html',project=project,view=view,form=form, material = material,mat11=mat11,mat22=mat22,mat33=mat33,mat44=mat44,mat55=mat55,mat66=mat66,mat77=mat77,mat88=mat88,mat99=mat99,mat1010=mat1010)
+
+
+@app.route('/aprojectdelete/<int:id>')
+def aprojectdelete(id):
+    delete = Project.query.get_or_404(id)
+    try:
+        db.session.delete(delete)
+        db.session.commit()
+        return redirect('/aprojectsview')
+    except:
+        return 'can not delete'
+
+@app.route('/usort/<int:id>',methods=['POST','GET'])
+def usort(id):
+    material = Materials.query.all()
+    project = Project.query.get_or_404(id)
+    form=Projects()
+    if form.validate_on_submit():
+        mat1=form.mat1.data
+        mat11=Materials.query.get_or_404(mat1)
+        mat1cost=int(mat11.price)*int(form.mat1q.data)
+        mat2=form.mat2.data
+        mat22=Materials.query.get_or_404(mat2)
+        mat2cost=int(mat22.price)*int(form.mat2q.data)
+        mat3=form.mat3.data
+        mat33=Materials.query.get_or_404(mat3)
+        mat3cost=int(mat33.price)*int(form.mat3q.data)
+        mat4=form.mat4.data
+        mat44=Materials.query.get_or_404(mat4)
+        mat4cost=int(mat44.price)*int(form.mat4q.data)
+        mat5=form.mat5.data
+        mat55=Materials.query.get_or_404(mat5)
+        mat5cost=int(mat55.price)*int(form.mat5q.data)
+        mat6=form.mat6.data
+        mat66=Materials.query.get_or_404(mat6)
+        mat6cost=int(mat66.price)*int(form.mat6q.data)
+        mat7=form.mat7.data
+        mat77=Materials.query.get_or_404(mat7)
+        mat7cost=int(mat77.price)*int(form.mat7q.data)
+        mat8=form.mat8.data
+        mat88=Materials.query.get_or_404(mat8)
+        mat8cost=int(mat88.price)*int(form.mat8q.data)
+        mat9=form.mat9.data
+        mat99=Materials.query.get_or_404(mat9)
+        mat9cost=int(mat99.price)*int(form.mat9q.data)
+        mat10=form.mat10.data
+        mat1010=Materials.query.get_or_404(mat10)
+        mat10cost=int(mat1010.price)*int(form.mat10q.data)
+        matcost = int(mat1cost)+int(mat2cost)+int(mat3cost)+int(mat4cost)+int(mat5cost)+int(mat6cost)+int(mat7cost)+int(mat8cost)+int(mat9cost)+int(mat10cost)
+        totalcost = int(project.empcost1)+int(matcost)+int(project.addcost)
+        sort = Sort(projectowner= project.owner,sortowner = current_user.username,projectname=project.name,projectid= project.id,totalcost=totalcost , matcost=  matcost  ,mat1= form.mat1.data  , mat2= form.mat2.data  ,mat3= form.mat3.data   ,mat4=form.mat4.data, mat5=form.mat5.data   ,mat1q= form.mat1q.data  , mat2q= form.mat2q.data  ,mat3q= form.mat3q.data   ,mat4q=form.mat4q.data, mat5q=form.mat5q.data)
+        db.session.add(sort)
+        db.session.commit()
+        return redirect('/uindex')
+    elif request.method == 'GET':
+        form.name.data = project.name
+        form.desc.data = project.desc
+        form.days.data = project.days
+        form.numemp.data = project.numemp
+        form.empcost.data = project.empcost
+        form.addcost.data = project.addcost
+        form.mat1q.data = project.mat1q
+        form.mat2q.data = project.mat2q
+        form.mat3q.data = project.mat3q
+        form.mat4q.data = project.mat4q
+        form.mat5q.data = project.mat5q
+        form.mat6q.data = project.mat6q
+        form.mat7q.data = project.mat7q
+        form.mat8q.data = project.mat8q
+        form.mat9q.data = project.mat9q
+        form.mat10q.data = project.mat10q
+        mat1 = project.mat1
+        mat11= Materials.query.get_or_404(mat1)
+        mat2 = project.mat2
+        mat22= Materials.query.get_or_404(mat2)
+        mat3 = project.mat3
+        mat33= Materials.query.get_or_404(mat3)
+        mat4 = project.mat1
+        mat44= Materials.query.get_or_404(mat4)
+        mat5 = project.mat5
+        mat55= Materials.query.get_or_404(mat5)
+        mat6 = project.mat6
+        mat66= Materials.query.get_or_404(mat6)
+        mat7 = project.mat7
+        mat77= Materials.query.get_or_404(mat7)
+        mat8 = project.mat8
+        mat88= Materials.query.get_or_404(mat8)
+        mat9 = project.mat9
+        mat99= Materials.query.get_or_404(mat9)
+        mat10 = project.mat10
+        mat1010= Materials.query.get_or_404(mat10)
+    return render_template("usort.html",form=form ,material=material,project=project,mat11=mat11,mat22=mat22,mat33=mat33,mat44=mat44,mat55=mat55,mat66=mat66,mat77=mat77,mat88=mat88,mat99=mat99,mat1010=mat1010)
+
+
+@app.route('/usorted')
+def usorted():
+    sort = Sort.query.filter_by(sortowner=current_user.username).all()
+
+    return render_template("usorted.html",sort=sort)
+
+
+@app.route('/usortedprofile/<int:id>')
+def usortedprofile(id):
+    sort = Sort.query.get_or_404(id)
+    projectid = sort.projectid
+    project=Project.query.get_or_404(projectid)
+    mat1=Materials.query.get_or_404(sort.mat1)
+    mat2=Materials.query.get_or_404(sort.mat2)
+    mat3=Materials.query.get_or_404(sort.mat3)
+    mat4=Materials.query.get_or_404(sort.mat4)
+    mat5=Materials.query.get_or_404(sort.mat5)
+    mat6 = Materials.query.get_or_404(project.mat6)
+    mat7 = Materials.query.get_or_404(project.mat7)
+    mat8 = Materials.query.get_or_404(project.mat8)
+    mat9 = Materials.query.get_or_404(project.mat9)
+    mat10 = Materials.query.get_or_404(project.mat10)
+    return render_template("usortedprofile.html",sort=sort,project=project,mat1=mat1,mat2=mat2,mat3=mat3,mat4=mat4,mat5=mat5,mat6=mat6,mat7=mat7,mat8=mat8,mat9=mat9,mat10=mat10)    
+
+
+
+@app.route('/auserrequest')
+def auserrequest():
+    sort = Sort.query.filter_by(projectowner=current_user.username).all()
+    return render_template("auserrequest.html",sort=sort)
+
+@app.route('/auserrequestprofile/<int:id>')
+def auserrequestprofile(id):
+    sort = Sort.query.get_or_404(id)
+    projectid = sort.projectid
+    project=Project.query.get_or_404(projectid)
+    mat1=Materials.query.get_or_404(sort.mat1)
+    mat2=Materials.query.get_or_404(sort.mat2)
+    mat3=Materials.query.get_or_404(sort.mat3)
+    mat4=Materials.query.get_or_404(sort.mat4)
+    mat5=Materials.query.get_or_404(sort.mat5)
+    mat6 = Materials.query.get_or_404(project.mat6)
+    mat7 = Materials.query.get_or_404(project.mat7)
+    mat8 = Materials.query.get_or_404(project.mat8)
+    mat9 = Materials.query.get_or_404(project.mat9)
+    mat10 = Materials.query.get_or_404(project.mat10)
+    return render_template("auserrequestprofile.html",sort=sort,project=project,mat1=mat1,mat2=mat2,mat3=mat3,mat4=mat4,mat5=mat5,mat6=mat6,mat7=mat7,mat8=mat8,mat9=mat9,mat10=mat10)    
+
+@app.route('/auserapprove/<int:id>',methods=['POST','GET'])
+def auserapprove(id):
+    sort = Sort.query.get_or_404(id)
+    sort.action = 'approved'
+    db.session.commit()
+    return redirect('/auserrequest')
+
+@app.route('/auserreject/<int:id>',methods=['POST','GET'])
+def auserreject(id):
+    sort = Sort.query.get_or_404(id)
+    sort.action = 'rejected'
+    db.session.commit()
+    return redirect('/auserrequest')
+    
 @app.route('/alayout')
 def alayout():
     return render_template("alayout.html")
@@ -203,7 +502,7 @@ def uindex():
         phone= request. form['phone1']
         subject= request. form['subject1']
         message= request. form['message1']
-        new1 = Feedback(namee=name,email=email,phone=phone,subject=subject,message=message)
+        new1 = Feedback(namee=name,email=email,phone=phone,subject=subject,message=message,usertype='user')
         try:
             db.session.add(new1)
             db.session.commit()
@@ -284,8 +583,12 @@ def deleteimage(id):
 
 @app.route('/feedback')
 def feedback():
-    feedback1=Feedback.query.all()
+    feedback1=Feedback.query.filter_by(usertype='public').all()
     return render_template("feedback.html",feedback=feedback1)
+@app.route('/ufeedback')
+def ufeedback():
+    feedback1=Feedback.query.filter_by(usertype='user').all()
+    return render_template("ufeedback.html",feedback=feedback1)
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -435,24 +738,43 @@ def achangepassword():
 @app.route('/aapprove')
 def aapprove():
     user = Login.query.filter_by(usertype='architect',status = 'NULL')
+
     return render_template("aapprove.html",user=user)
 
 
 @app.route('/aapprove1/<int:id>', methods= ['GET','POST'])
 def aapprove1(id):
     log = Login.query.get_or_404(id)
+    password = log.password
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    log.password = hashed_password
     log.status = 'approved'
-    approvemail(id)
+    approvemail(id,password)
     db.session.commit()
     return redirect('/aapprove')
 
+@app.route('/areject/<int:id>', methods= ['GET','POST'])
+def areject(id):
+    log = Login.query.get_or_404(id)
+    log.status = 'rejected'
+    rejectmail(id)
+    db.session.commit()
+    return redirect('/aapprove')
 
-
-def approvemail(id):
+def rejectmail(id):
     log = Login.query.get_or_404(id)
     msg = Message('successful',
                   recipients=[log.email])
-    msg.body = f''' your Account has been approved '''
+    msg.body = f''' your Account has been rejected '''
+    mail.send(msg) 
+
+def approvemail(id,password):
+    log = Login.query.get_or_404(id)
+    print(password)
+    msg = Message('successful',
+                  recipients=[log.email])
+    msg.body = f''' your Account has been approved .. 
+        username is {log.username} and password is {password}'''
     mail.send(msg) 
 
 
@@ -464,4 +786,104 @@ def uprojectprofile(id):
     mat3 = Materials.query.get_or_404(project.mat3)
     mat4 = Materials.query.get_or_404(project.mat4)
     mat5 = Materials.query.get_or_404(project.mat5)
-    return render_template("uprojectprofile.html",project=project,mat1=mat1,mat2=mat2,mat3=mat3,mat4=mat4,mat5=mat5)
+    mat6 = Materials.query.get_or_404(project.mat6)
+    mat7 = Materials.query.get_or_404(project.mat7)
+    mat8 = Materials.query.get_or_404(project.mat8)
+    mat9 = Materials.query.get_or_404(project.mat9)
+    mat10 = Materials.query.get_or_404(project.mat10)
+    return render_template("uprojectprofile.html",project=project,mat1=mat1,mat2=mat2,mat3=mat3,mat4=mat4,mat5=mat5,mat6=mat6,mat7=mat7,mat8=mat8,mat9=mat9,mat10=mat10)
+
+
+
+
+@app.route('/payment/<int:id>')
+def payment(id):
+    form = Cod()
+    form1 = Creditcard()
+    form2 = Paypal()
+    sort = Sort.query.get_or_404(id)
+    return render_template('payment.html',sort = sort,form=form,form1 =form1,form2=form2)
+
+
+# def sendmail():
+#     msg = Message('successful',
+#                   recipients=[current_user.email])
+#     msg.body = f''' your Order Succsessfully Completed...   Track Your Order   'http://127.0.0.1:5000/login' '''
+#     mail.send(msg)
+
+@app.route('/creditcard/<int:id>',methods = ['GET','POST'])
+@login_required
+def creditcard(id):
+    form = Cod()
+    form1 = Creditcard()
+    form2 = Paypal()
+    sort = Sort.query.get_or_404(id)
+    if form1.validate_on_submit():
+        sort.payment = 'credit card'
+        sort.booking = 'booked'
+        sendmail()
+        db.session.commit()
+    if form1.validate_on_submit():
+        credit = Credit(sortid = sort.id,sortowner=current_user.username,projectowner=sort.projectowner,name = form1.name.data,card= form1.number.data ,cvv=form1.cvv.data , expdate=form1.date.data)
+        db.session.add(credit)
+        db.session.commit()
+        return redirect('/successfull')
+    return render_template('payment.html',sort = sort,form=form ,form1 =form1,form2=form2)
+
+@app.route('/paypal/<int:id>',methods = ['GET','POST'])
+@login_required
+def paypal(id):
+    form = Cod()
+    form1 = Creditcard()
+    form2 = Paypal()
+    sort = Sort.query.get_or_404(id)
+    if form2.validate_on_submit():
+        sort.payment = 'credit card'
+        sort.booking = 'booked'
+        sendmail()
+        db.session.commit()
+    if form2.validate_on_submit():
+        pay = Pay(sortid = sort.id,sortowner = current_user.username,projectowner=sort.projectowner,name = form2.name.data,card= form2.number.data ,cvv=form2.cvv.data , validdate=form2.date.data)
+        db.session.add(pay)
+        db.session.commit()
+        return redirect('/successfull')
+    return render_template('payment.html',sort=sort,form=form ,form1 =form1,form2=form2)
+
+
+def sendmail():
+    msg = Message('successful',
+                  recipients=[current_user.email])
+    msg.body = f''' your transaction completed successfullyy '''
+    mail.send(msg)
+
+
+
+@app.route('/successfull')
+@login_required
+def successful1():
+    return render_template("successfull.html")
+
+
+@app.route('/ubookedproject')
+def ubookedproject():
+    sort = Sort.query.filter_by(sortowner=current_user.username,booking='booked').all()
+    return render_template("ubookedproject.html",sort=sort)
+
+
+@app.route('/abookedproject')
+def abookedproject():
+    sort = Sort.query.filter_by(projectowner=current_user.username,booking='booked').all()
+    return render_template("abookedproject.html",sort=sort)
+
+@app.route('/uamount/<int:id>',methods = ['GET','POST'])
+def uamount(id):
+    form=Amountform()
+    sort=Sort.query.get_or_404(id)
+    if form.validate_on_submit():
+        sort.amount = form.amount.data
+        db.session.commit()
+        flash('Your post has been updated!', 'success')
+        return redirect('/payment/'+str(sort.id))
+    return render_template("uamount.html",form=form)
+
+

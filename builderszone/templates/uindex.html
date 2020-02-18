@@ -43,7 +43,7 @@
                <!--//navigation section -->
                <nav class="navbar navbar-expand-lg navbar-light">
                   <div class="hedder-up">
-                     <h1><a class="navbar-brand" href="/">Builderszone</a></h1>
+                     <h1><a class="navbar-brand" href="/uindex">Builderszone</a></h1>
                   </div>
                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
@@ -57,7 +57,10 @@
                            <a href="#events" class="nav-link scroll">Architect design</a>
                         </li>
                         <li class="nav-item">
-                           <a href="#materials" class="nav-link scroll">Materials</a>
+                           <a href="/usorted" class="nav-link">Sorted Projects</a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/ubookedproject" class="nav-link">Booked Projects</a>
                         </li>
                         <li class="nav-item">
                            <a href="/account1/{{current_user.id}}" class="nav-link">{{current_user.username}}</a>
@@ -149,6 +152,13 @@
 
                         <button>
                            View
+                        </button>
+
+                     </a>
+                     <a href="/usort/{{project.id}}">
+
+                        <button>
+                           Sort
                         </button>
 
                      </a>

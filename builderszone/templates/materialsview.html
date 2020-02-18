@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="row col-md-6 col-md-offset-2 custyle">
-    <table class="table table-striped custab">
+    <table class="table table-striped custab css-serial">
     <thead>
     <a href="#" class="btn btn-primary btn-xs pull-right"><b>+</b> Add new categories</a>
         <tr>
@@ -22,7 +22,7 @@
     {% for material in material %}
 
             <tr>
-                <td>{{material.id}}</td>
+                <td></td>
                 <td>{{material.name}}</td>
                 <td>{{material. brand}}</td>
                 <td>{{material.price}}</td>
@@ -57,5 +57,17 @@
     box-shadow: 3px 3px 0px transparent;
     transition: 0.5s;
     }
-</style>
+
+    .css-serial {
+      counter-reset: serial-number;  /* Set the serial number counter to 0 */
+    }
+    
+    .css-serial td:first-child:before {
+      counter-increment: serial-number;  /* Increment the serial number counter */
+      content: counter(serial-number);  /* Display the counter */
+    }
+    
+    
+    </style>
+  
 {% endblock %}

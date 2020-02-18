@@ -54,21 +54,27 @@
                   <span class="navbar-toggler-icon"></span>
                   </button>
                   <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                     <ul class="navbar-nav ">
+                     <ul class="navbar-nav" style="color: white;">
                         <li class="nav-item active">
-                           <a class="nav-link" href="aindex">Home</a>
+                           <a class="nav-link" href="/aindex" style="color: white;">Home</a>
                         </li>
                         <li class="nav-item">
-                           <a href="projectadd" class="nav-link scroll">Project Upload</a>
+                           <a href="/projectadd" class="nav-link scroll" style="color: white;">Project Upload</a>
                         </li>
                         <li class="nav-item">
-                           <a href="#" class="nav-link scroll">User Requests</a>
+                           <a href="/aprojectsview" class="nav-link scroll" style="color: white;">Projects</a>
                         </li>
                         <li class="nav-item">
-                           <a href="/architectaccount" class="nav-link scroll">{{current_user.username}}</a>
+                           <a href="/auserrequest" class="nav-link scroll" style="color: white;">User Requests</a>
                         </li>
                         <li class="nav-item">
-                           <a href="logout"   class="nav-link">Logout</a>
+                           <a href="/abookedproject" class="nav-link scroll" style="color: white;">Booked Project</a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/architectaccount" class="nav-link scroll" style="color: white;">{{current_user.username}}</a>
+                        </li>
+                        <li class="nav-item">
+                           <a href="/logout"   class="nav-link" style="color: white;">Logout</a>
                         </li>
                      </ul>
                   </div>
