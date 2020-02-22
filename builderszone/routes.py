@@ -201,7 +201,7 @@ def projectadd():
 
 @app.route('/aprojectsview')
 def aprojectsview():
-    project=Project.query.all()
+    project=Project.query.filter_by(owner=current_user.username).all()
     return render_template("aprojectsview.html",project=project)
 
 @app.route('/aprojectsedit/<int:id>',methods=['POST','GET'])
