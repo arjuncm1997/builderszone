@@ -10,9 +10,6 @@ def load_user(id):
 
 
 
-
-
-
 class Login(db.Model, UserMixin):
 
     id=db.Column(db.Integer, primary_key=True)
